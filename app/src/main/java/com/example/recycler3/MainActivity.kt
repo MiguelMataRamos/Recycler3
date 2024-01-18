@@ -53,49 +53,52 @@ class MainActivity : AppCompatActivity(), Clicks {
         }
 
         bind.botonAdd2.setOnClickListener {
-            if (bind.nuevatarea.text.toString().isNullOrEmpty()){
-                popUp("No se puede añadir una tarea vacia")
-                return@setOnClickListener
-            }else{
-                var tarea = Tarea(bind.nuevatarea.text.toString(), false)
-                data.add(tarea)
-                adaptador.notifyDataSetChanged()
-                bind.textotareas.visibility = View.VISIBLE
-                bind.botonAdd2.visibility = View.INVISIBLE
-                bind.botonAdd1.visibility = View.VISIBLE
-                bind.textInputLayout.visibility = View.INVISIBLE
-                bind.nuevatarea.setText("")
-                popUp("Tarea añadida")
-                bind.nuevatarea.clearFocus()
-                //que se oculte el teclado
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(bind.nuevatarea.windowToken, 0)
-
-            }
-
+           addTarea()
         }
 
     }
 
-    //funcion que recibe un string y ejecuta un pop up  con el string
-    private fun popUp(texto: String){
+    fun addTarea(){
+        if (bind.nuevatarea.text.toString().isNullOrEmpty()) {
+            popUp("No se puede añadir una tarea vacia")
+        } else {
+            var tarea = Tarea(bind.nuevatarea.text.toString(), false)
+            data.add(tarea)
+            adaptador.notifyDataSetChanged()
+            bind.textotareas.visibility = View.VISIBLE
+            bind.botonAdd2.visibility = View.INVISIBLE
+            bind.botonAdd1.visibility = View.VISIBLE
+            bind.textInputLayout.visibility = View.INVISIBLE
+            bind.nuevatarea.setText("")
+            popUp("Tarea añadida")
+            bind.nuevatarea.clearFocus()
+            //que se oculte el teclado
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(bind.nuevatarea.windowToken, 0)
+
+        }
+    }
+
+    private fun popUp(texto: String) {
         Toast.makeText(this, texto, Toast.LENGTH_SHORT).show()
     }
 
     override fun onlongclick(tarea: Tarea, position: Int): Boolean {
         AlertDialog.Builder(this).setTitle("Eliminar tarea")
-            .setMessage("¿Estas seguro de eliminar la tarea?")
-            .setPositiveButton("Si"){_,_ ->
+            .setMessage("¿Estas seguro de eliminar la tarea ${tarea.nombre.uppercase()}?")
+            .setPositiveButton("Si") { _, _ ->
                 data.removeAt(position)
                 adaptador.notifyItemRemoved(position)
                 popUp("Tarea eliminada")
                 true
             }
-            .setNegativeButton("No"){_,_ ->
+            .setNegativeButton("No") { _, _ ->
                 false
             }
             .show()
         return true
 
     }
+
+
 }
