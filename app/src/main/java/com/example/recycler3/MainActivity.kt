@@ -1,8 +1,10 @@
 package com.example.recycler3
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.recycler3.databinding.ActivityMainBinding
@@ -42,18 +44,34 @@ class MainActivity : AppCompatActivity(), Clicks {
             bind.botonAdd1.visibility = View.INVISIBLE
             bind.botonAdd2.visibility = View.VISIBLE
             bind.textInputLayout.visibility = View.VISIBLE
+            bind.nuevatarea.requestFocus()
+            //que se despliegue el teclado
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(bind.nuevatarea, InputMethodManager.SHOW_IMPLICIT)
+
         }
 
         bind.botonAdd2.setOnClickListener {
-            var tarea = Tarea(bind.nuevatarea.text.toString(), false)
-            data.add(tarea)
-            adaptador.notifyDataSetChanged()
-            bind.textotareas.visibility = View.VISIBLE
-            bind.botonAdd2.visibility = View.INVISIBLE
-            bind.botonAdd1.visibility = View.VISIBLE
-            bind.textInputLayout.visibility = View.INVISIBLE
-            bind.nuevatarea.setText("")
-            popUp("Tarea añadida")
+            if (bind.nuevatarea.text.toString().isNullOrEmpty()){
+                popUp("No se puede añadir una tarea vacia")
+                return@setOnClickListener
+            }else{
+                var tarea = Tarea(bind.nuevatarea.text.toString(), false)
+                data.add(tarea)
+                adaptador.notifyDataSetChanged()
+                bind.textotareas.visibility = View.VISIBLE
+                bind.botonAdd2.visibility = View.INVISIBLE
+                bind.botonAdd1.visibility = View.VISIBLE
+                bind.textInputLayout.visibility = View.INVISIBLE
+                bind.nuevatarea.setText("")
+                popUp("Tarea añadida")
+                bind.nuevatarea.clearFocus()
+                //que se oculte el teclado
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(bind.nuevatarea.windowToken, 0)
+
+            }
+
         }
 
     }
