@@ -30,6 +30,10 @@ class AdaptadorTarea(var listatareas: MutableList<Tarea>, var listener: Clicks) 
 
         holder.bind.Tarea.text = tarea.nombre
         holder.bind.Tarea.isChecked = tarea.completado
+
+        holder.bind.Tarea.setOnLongClickListener {
+            listener.onlongclick(tarea, position)
+        }
     }
 
 

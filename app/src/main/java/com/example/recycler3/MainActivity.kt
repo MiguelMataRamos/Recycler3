@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.recycler3.databinding.ActivityMainBinding
 
@@ -77,7 +78,24 @@ class MainActivity : AppCompatActivity(), Clicks {
     }
 
     //funcion que recibe un string y ejecuta un pop up  con el string
-    fun popUp(texto: String){
+    private fun popUp(texto: String){
         Toast.makeText(this, texto, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onlongclick(tarea: Tarea, position: Int): Boolean {
+        AlertDialog.Builder(this).setTitle("Eliminar tarea")
+            .setMessage("¿Estas seguro de eliminar la tarea?")
+            .setPositiveButton("Si"){_,_ ->
+                data.removeAt(position)
+                adaptador.notifyItemRemoved(position)
+                popUp("Tarea eliminada")
+                true
+            }
+            .setNegativeButton("No"){_,_ ->
+                false
+            }
+            .show()
+        return true
+
     }
 }
